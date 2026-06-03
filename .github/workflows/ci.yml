@@ -17,14 +17,27 @@ jobs:
     steps:
 
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Setup Java
         uses: actions/setup-java@v4
         with:
           distribution: temurin
           java-version: 17
+          cache: maven
 
       - name: Build
         run: mvn clean verify
+
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: application-jar
+          path: target/*.jar
+
+      - name: Docker Version
+        run: docker --version
+
+      - name: Build Docker Image
+        run: docker build -t mini-devops .
 
