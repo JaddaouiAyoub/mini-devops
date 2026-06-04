@@ -1,13 +1,17 @@
 name: First-CI
 
-on :
-  push :
+on:
+  push:
     branches:
       - main
 
   pull_request:
     branches:
       - main
+
+permissions:
+  contents: read
+  packages: write
 
 jobs:
   build:
@@ -35,9 +39,20 @@ jobs:
           name: application-jar
           path: target/*.jar
 
-      - name: Docker Version
-        run: docker --version
+      - name: Login to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Build Docker Image
-        run: docker build -t mini-devops .
+        run: |
+          docker build \
+            -t ghcr.io/${{ github.repository_owner }}/mini-devops:latest \
+            .
 
+      - name: Push Docker Image
+        run: |
+          docker push \
+            ghcr.io/${{ github.repository_owner }}/mini-devops:latest
