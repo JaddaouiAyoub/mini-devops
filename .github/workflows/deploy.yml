@@ -1,0 +1,22 @@
+name: Test-CD
+
+on:
+  workflow_dispatch:
+
+jobs:
+  ssh-test:
+
+    runs-on: ubuntu-latest
+
+    steps:
+
+      - name: SSH Test
+        uses: appleboy/ssh-action@v1.2.2
+        with:
+          host: ${{ secrets.VM_HOST }}
+          username: ${{ secrets.VM_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            hostname
+            whoami
+            docker --version
