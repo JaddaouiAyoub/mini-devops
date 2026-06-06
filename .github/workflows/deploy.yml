@@ -1,22 +1,36 @@
-name: Test-CD
+name: Deploy
 
 on:
-  workflow_dispatch:
+  workflow_run:
+    workflows: ["First-CI"]
+    types:
+      - completed
 
 jobs:
-  ssh-test:
+  deploy:
+
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
 
     runs-on: ubuntu-latest
 
     steps:
 
-      - name: SSH Test
+      - name: Deploy on Oracle VM
         uses: appleboy/ssh-action@v1.2.2
         with:
           host: ${{ secrets.VM_HOST }}
           username: ${{ secrets.VM_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
-            hostname
-            whoami
-            docker --version
+            docker pull ghcr.io/jaddaouiayoub/mini-devops:latest
+
+            docker stop mini-devops || true
+            docker rm mini-devops || true
+
+            docker run -d \
+              --restart unless-stopped \
+              --name mini-devops \
+              -p 8080:8080 \
+              ghcr.io/jaddaouiayoub/mini-devops:latest
+
+            docker image prune -f
