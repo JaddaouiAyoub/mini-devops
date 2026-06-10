@@ -9,6 +9,6 @@ import org.springframework.web.bind.annotation.RestController;
 public class HomeController {
     @GetMapping("/hello")
     public String hello(){
-        return "Helloo devops";
+        return "Helloo devops , j'utilisa maintenant docker compose";
     }
 }

@@ -1,0 +1,10 @@
+services:
+  app:
+    image: ghcr.io/jaddaouiayoub/mini-devops:latest
+
+    container_name: mini-devops
+
+    restart: unless-stopped
+
+    ports:
+      - "8080:8080"

@@ -22,15 +22,10 @@ jobs:
           username: ${{ secrets.VM_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
-            docker pull ghcr.io/jaddaouiayoub/mini-devops:latest
+            cd ~/mini-devops
 
-            docker stop mini-devops || true
-            docker rm mini-devops || true
+            docker compose pull
 
-            docker run -d \
-              --restart unless-stopped \
-              --name mini-devops \
-              -p 8080:8080 \
-              ghcr.io/jaddaouiayoub/mini-devops:latest
+            docker compose up -d
 
             docker image prune -f
