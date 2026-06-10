@@ -23,6 +23,8 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
             cd ~/mini-devops
+            
+            git pull
 
             docker compose pull
 
