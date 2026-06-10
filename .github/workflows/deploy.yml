@@ -29,5 +29,7 @@ jobs:
             docker compose pull
 
             docker compose up -d
+            
+            echo "APP_NAME=${{ secrets.APP_NAME }}" > .env
 
             docker image prune -f
