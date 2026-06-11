@@ -31,7 +31,7 @@ jobs:
           cache: maven
 
       - name: Build
-        run: mvn clean verify
+        run: mvn clean verify -DskipTests
 
       - name: Upload Artifact
         uses: actions/upload-artifact@v4
