@@ -23,4 +23,22 @@ public class ProductController {
     public List<Product> findAll() {
         return service.findAll();
     }
+
+    @GetMapping("/{id}")
+    public Product findById(@PathVariable Long id){
+        return service.findById(id);
+    }
+
+    @PutMapping("/{id}")
+    public Product update(
+            @PathVariable Long id,
+            @RequestBody Product product
+    ) {
+        return service.update(id, product);
+    }
+
+    @DeleteMapping("/{id}")
+    public void delete(@PathVariable Long id) {
+        service.delete(id);
+    }
 }
