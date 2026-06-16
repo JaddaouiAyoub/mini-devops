@@ -46,6 +46,22 @@ services:
     volumes:
       - redis_data:/data
 
+  prometheus:
+    image: prom/prometheus
+
+    container_name: prometheus
+
+    restart: unless-stopped
+
+    ports:
+      - "9090:9090"
+
+    volumes:
+      - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml
+
+    depends_on:
+      - app
+
 volumes:
   postgres_data:
   redis_data:
