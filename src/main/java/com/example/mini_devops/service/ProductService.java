@@ -4,6 +4,7 @@ import com.example.mini_devops.entity.Product;
 import com.example.mini_devops.repository.ProductRepository;
 import io.micrometer.core.annotation.Timed;
 import io.micrometer.core.instrument.MeterRegistry;
+import io.micrometer.core.instrument.Timer;
 import io.prometheus.metrics.core.metrics.Gauge;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.CacheEvict;
@@ -30,13 +31,14 @@ public class ProductService {
         return repository.save(product);
     }
 
-    @Timed("products.findAll")
     @Cacheable("products")
     public List<Product> findAll() {
 
         System.out.println("DB CALL - FIND ALL");
 
-        return repository.findAll();
+        return Timer.builder("products.findall")
+                .register(meterRegistry)
+                .record(() -> repository.findAll());
     }
 
     @Timed("products.findById")
