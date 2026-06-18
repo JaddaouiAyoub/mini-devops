@@ -2,6 +2,9 @@ package com.example.mini_devops.service;
 
 import com.example.mini_devops.entity.Product;
 import com.example.mini_devops.repository.ProductRepository;
+import io.micrometer.core.annotation.Timed;
+import io.micrometer.core.instrument.MeterRegistry;
+import io.prometheus.metrics.core.metrics.Gauge;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
@@ -16,12 +19,18 @@ import java.util.List;
 public class ProductService {
 
     private final ProductRepository repository;
+    private final MeterRegistry meterRegistry;
 
+
+    @Timed("product.creation")
     @CacheEvict(value = "products", allEntries = true)
     public Product create(Product product) {
+
+        meterRegistry.counter("products.created").increment();
         return repository.save(product);
     }
 
+    @Timed("products.findAll")
     @Cacheable("products")
     public List<Product> findAll() {
 
@@ -30,6 +39,7 @@ public class ProductService {
         return repository.findAll();
     }
 
+    @Timed("products.findById")
     @Cacheable(value = "product", key = "#id")
     public Product findById(Long id) {
 
@@ -40,6 +50,7 @@ public class ProductService {
                         new RuntimeException("Product not found"));
     }
 
+    @Timed("products.update")
     @CachePut(value = "product", key = "#result.id")
     @CacheEvict(value = "products", allEntries = true)
     public Product update(Long id, Product product) {
