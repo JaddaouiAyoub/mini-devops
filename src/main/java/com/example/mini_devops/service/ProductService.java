@@ -42,7 +42,7 @@ public class ProductService {
     }
 
     @Timed("products.findById")
-    @Cacheable(value = "product", key = "#id")
+//    @Cacheable(value = "product", key = "#id")
     public Product findById(Long id) {
 
         System.out.println("DB CALL - FIND BY ID");
